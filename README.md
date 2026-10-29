@@ -4,6 +4,8 @@
 
 Hackatón SECIHTI–CIDE con NVIDIA, CDMX, 29 de octubre de 2026. Track: Campo inteligente.
 
+**Pruébalo:** https://surco-ivory.vercel.app (presiona "Cargar ejemplo" o usa el micrófono).
+
 ![Tablero de Surco con el ejemplo de 3 hectáreas de maíz en Toluca: a la izquierda los pasos, a la derecha la hoja que se lleva al intermediario](docs/img/tablero.png)
 
 ## Equipo
