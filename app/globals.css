@@ -226,3 +226,14 @@ details summary { cursor: pointer; font-weight: 700; margin-top: 14px; }
   .mic.grabando { animation: latido 1.2s ease-in-out infinite; }
   .guia-barra > div { transition: width .5s ease; }
 }
+
+/* ---------- Asistente de voz ---------- */
+.asistente-inicio { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; color: var(--tierra); }
+.asistente-activo { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; font-weight: 700; }
+.asistente-punto { width: 14px; height: 14px; border-radius: 50%; background: var(--milpa); }
+.asistente-punto.grabando { background: var(--chile); }
+.asistente-punto.hablando { background: var(--elote); }
+.asistente-punto.procesando { background: var(--azul); }
+@media (prefers-reduced-motion: no-preference) {
+  .asistente-punto.hablando, .asistente-punto.grabando { animation: latido 1s ease-in-out infinite; }
+}
