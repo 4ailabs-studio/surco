@@ -4,10 +4,17 @@
 
 Hackatón SECIHTI–CIDE con NVIDIA, CDMX, 29 de octubre de 2026. Track: Campo inteligente.
 
+![Tablero de Surco con el ejemplo de 3 hectáreas de maíz en Toluca: a la izquierda los pasos, a la derecha la hoja que se lleva al intermediario](docs/img/tablero.png)
+
+## Equipo
+
+- Dr. Miguel Ojeda Ríos, médico, Instituto Centrobioenergética: idea, diseño del flujo y balance de decisión inspirado en la entrevista motivacional.
+- _Integrantes del equipo: por agregar._
+
 ## El problema
 
 - Solo **6.1 %** de las unidades de producción agropecuaria obtuvo crédito en 2022, y **1.9 %** tuvo seguro. En el Estado de México, el crédito fue de **1.1 %**; en Sinaloa, **34.5 %** (INEGI, Censo Agropecuario 2022).
-- Pocos piden, pero casi todos los que piden obtienen: en 2019, **9.4 %** solicitó y **8.4 %** obtuvo (INEGI, ENA 2019).
+- Pocos piden, pero casi todos los que piden obtienen: en 2019, **9.4 %** de las unidades solicitó crédito y **8.4 %** lo obtuvo (INEGI, ENA 2019). La lectura de que cerca de 9 de cada 10 solicitantes lo consiguen es un cálculo nuestro con esas dos cifras.
 - Quienes no piden dicen que es por intereses altos (64.3 %), muchos requisitos (49.6 %) y no querer endeudarse (45.4 %) (INEGI, ENA 2014; respuesta múltiple).
 
 El cuello de botella no es el banco: es decidir y prepararse.
@@ -22,6 +29,14 @@ Acompaña a un pequeño productor (o al técnico que lo atiende) en seis pasos:
 4. **¿Qué te frena?**: un balance de decisión inspirado en la entrevista motivacional que distingue miedo, falta de recursos o riesgo real. No pedir también es una buena respuesta.
 5. **Junta tus papeles** (solo si decide pedir), incluida la lista de lo que no le pueden exigir.
 6. **Llévate tu hoja**: una página para la CADER o el intermediario, con los datos declarados marcados.
+
+### El caso que muestra para qué sirve
+
+Con 3 hectáreas de maíz en Toluca, la referencia de FIRA supone 7 t/ha, pero SIAP registra 4.3 a 4.6 t/ha en ese municipio. Con el rendimiento real, después de pagar el crédito le quedarían **$1,721**, y necesita cosechar **4.4 t/ha** para no perder. Surco lo muestra antes de que el productor firme.
+
+![Paso "Haz tus cuentas": venta esperada, costo con intereses, lo que le quedaría y el rendimiento para no perder, con el costo a 17.5 % y a 8.5 % pagando a tiempo](docs/img/cuentas.png)
+
+![Paso "¿Qué te frena?": tres preguntas y una lectura que distingue miedo, falta de recursos o riesgo real](docs/img/que-te-frena.png)
 
 **Lo que no hace:** no tramita créditos, no evalúa solvencia, no promete aprobación, no recomienda intermediarios y no guarda audio ni datos personales. Los cálculos los hace el código; la IA solo entiende la voz.
 
