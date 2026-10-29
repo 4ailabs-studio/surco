@@ -6,7 +6,7 @@ import { resultadoCuentas, resumenSerie, senalAlerta, sensibilidad } from "@/lib
 import { checklistExpediente, evaluarElegibilidad, NO_PUEDEN_EXIGIR, validarPerfil } from "@/lib/expediente";
 import { metaAgrocostos, metaSiap, municipiosEdomex, referenciaCosto, serieMunicipio } from "@/lib/datos";
 import type { Perfil } from "@/lib/tipos";
-import VozCard from "./VozCard";
+import GuiaVoz from "./GuiaVoz";
 import { balanceDecision, type Preocupacion, type Respaldo, type Uso } from "@/lib/balance";
 
 const pesos = (n: number) => (Number.isFinite(n) ? n.toLocaleString("es-MX", { style: "currency", currency: "MXN", maximumFractionDigits: 0 }) : "—");
@@ -112,7 +112,7 @@ export default function Tablero() {
             <h2 id="p1">Cuéntanos de tu parcela</h2>
             <p className="paso-sub">Con esto calculamos todo lo demás. No guardamos tus datos.</p>
             <div className="panel campos">
-              <VozCard onPerfil={(p) => { setPerfil((prev) => ({ ...prev, ...p })); setEsEjemplo(false); }} />
+              <GuiaVoz perfil={perfil} onPerfil={(p) => { setPerfil((prev) => ({ ...prev, ...p })); setEsEjemplo(false); }} />
               <div className="acciones">
                 <button type="button" className="boton secundario" onClick={cargarEjemplo}>Cargar ejemplo</button>
                 {esEjemplo && <span className="etiqueta-ejemplo">Ejemplo, sin verificar</span>}

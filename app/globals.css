@@ -197,3 +197,32 @@ details summary { cursor: pointer; font-weight: 700; margin-top: 14px; }
 .lectura.pensar { background: #eceee8; }
 .lectura.recursos, .lectura.pausa { background: var(--chile-suave); }
 .hoja-aviso { margin: 14px 0 0; padding: 8px 10px; border: 2px solid var(--azul); border-radius: 8px; font-weight: 700; font-size: 0.88rem; }
+
+/* ---------- Guía por voz, una pregunta a la vez ---------- */
+.guia { display: grid; gap: 12px; padding-bottom: 18px; border-bottom: 1px dashed var(--linea); }
+.guia-cabeza { display: grid; gap: 6px; font-size: 0.9rem; color: var(--tierra); }
+.guia-barra { height: 12px; background: #e6e8e1; border-radius: 6px; overflow: hidden; }
+.guia-barra > div { height: 100%; background: var(--milpa); border-radius: 6px; }
+.guia-pregunta { font-family: var(--font-titulo); font-size: clamp(1.4rem, 2.6vw, 1.9rem); font-weight: 700; margin: 4px 0 0; max-width: 30ch; }
+.guia-ayuda { margin: 0; color: var(--tierra); }
+.guia-centro { display: flex; align-items: center; gap: 22px; flex-wrap: wrap; padding: 8px 0; }
+.mic { width: 112px; height: 112px; border-radius: 50%; border: 0; background: var(--elote); color: var(--azul); font-family: var(--font-titulo); font-weight: 800; font-size: 1.15rem; cursor: pointer; box-shadow: 0 6px 0 #c99c14; }
+.mic:active { transform: translateY(3px); box-shadow: 0 3px 0 #c99c14; }
+.mic:disabled { cursor: default; }
+.mic.grabando { background: var(--chile); color: #fff; box-shadow: 0 6px 0 #7d1a15; }
+.mic.bien { background: var(--milpa); color: #fff; box-shadow: 0 6px 0 #2a4a27; font-size: 2.2rem; }
+.guia-rapidas .opcion { min-width: 84px; font-size: 1.05rem; }
+.guia-escucho { margin: 0; font-weight: 700; color: var(--chile); }
+.guia-eco { margin: 0; font-style: italic; color: var(--tierra); }
+.guia-bien { margin: 0; font-weight: 700; color: var(--milpa); font-family: var(--font-titulo); font-size: 1.2rem; }
+.guia-pie { gap: 16px; }
+.enlace { background: none; border: 0; padding: 4px 0; color: var(--azul); text-decoration: underline; cursor: pointer; font: inherit; }
+.guia-escribir { display: flex; gap: 8px; flex-wrap: wrap; flex: 1 1 320px; }
+.guia-escribir input { flex: 1 1 200px; border: 2px solid var(--linea); border-radius: 10px; padding: 10px 12px; min-height: 48px; }
+.guia-fin { background: var(--milpa-suave); border-radius: 12px; padding: 16px; border-bottom: 0; }
+.guia-fin strong { font-family: var(--font-titulo); font-size: 1.3rem; }
+.guia-fin p { margin: 0; }
+@media (prefers-reduced-motion: no-preference) {
+  .mic.grabando { animation: latido 1.2s ease-in-out infinite; }
+  .guia-barra > div { transition: width .5s ease; }
+}

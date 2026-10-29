@@ -9,9 +9,9 @@ No inventes: si algo no se dice, usa null.`;
 
 export async function POST(req: Request) {
   try {
-    const { texto } = (await req.json()) as { texto?: string };
+    const { texto, pregunta } = (await req.json()) as { texto?: string; pregunta?: string };
     if (!texto || !texto.trim()) return Response.json({ error: "No hay texto que analizar." }, { status: 400 });
-    const salida = await chatMistral([{ role: "system", content: SISTEMA }, { role: "user", content: texto.slice(0, 2000) }], true);
+    const salida = await chatMistral([{ role: "system", content: SISTEMA }, { role: "user", content: (pregunta ? `Pregunta que se le hizo: ${pregunta.slice(0, 200)}\nRespuesta del productor: ` : "") + texto.slice(0, 2000) }], true);
     let raw: unknown = null;
     try { raw = JSON.parse(salida); } catch { raw = null; }
     return Response.json(normalizarPerfil(raw, municipiosEdomex()));
