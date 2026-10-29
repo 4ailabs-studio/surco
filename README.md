@@ -8,7 +8,7 @@ Hackatón SECIHTI–CIDE con NVIDIA, CDMX, 29 de octubre de 2026. Track: Campo i
 
 ## Equipo
 
-- Dr. Miguel Ojeda Rios, médico, Instituto Centrobioenergética: idea, diseño del flujo y balance de decisión inspirado en la entrevista motivacional.
+- Dr. Miguel Ojeda Rios, médico: idea, diseño del flujo y balance de decisión inspirado en la entrevista motivacional.
 - Beatriz Hernández Alonso, maestra en Economía (UNAM).
 - Jonathan Ávila Pineda, ingeniero industrial (ITESM).
 - Gabriel Castillo Suárez, estudiante de Computación (UNAM).
