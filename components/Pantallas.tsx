@@ -15,7 +15,7 @@ type Paso =
   | "inicio" | "cultivo" | "hectareas" | "municipio" | "sader" | "tierra" | "edad"
   | "califica" | "cuentas" | "uso" | "preocupa" | "respaldo" | "lectura" | "papeles" | "hoja" | "no-pedir";
 
-const ORDEN: Paso[] = ["inicio", "cultivo", "hectareas", "municipio", "sader", "tierra", "edad", "califica", "cuentas", "uso", "preocupa", "respaldo", "lectura", "papeles", "hoja"];
+const ORDEN: Paso[] = ["inicio", "cultivo", "hectareas", "municipio", "sader", "califica", "cuentas", "uso", "preocupa", "respaldo", "lectura", "tierra", "edad", "papeles", "hoja"];
 
 const PREGUNTA: Partial<Record<Paso, string>> = {
   cultivo: "¿Qué siembras?",
@@ -258,7 +258,7 @@ export default function Pantallas() {
         )}
 
         {paso === "sader" && (<><SiNo valor={perfil.beneficiarioSader} onElegir={(v) => setPerfil((x) => ({ ...x, beneficiarioSader: v }))} /><BotonVoz /></>)}
-        {paso === "tierra" && (<><SiNo valor={perfil.posesionPredio} onElegir={(v) => setPerfil((x) => ({ ...x, posesionPredio: v }))} /><BotonVoz /></>)}
+        {paso === "tierra" && (<><p className="w-sub">Ya casi terminamos. Si no los tienes, no pasa nada: te decimos cuáles conseguir.</p><SiNo valor={perfil.posesionPredio} onElegir={(v) => setPerfil((x) => ({ ...x, posesionPredio: v }))} /><BotonVoz /></>)}
         {paso === "edad" && (<><p className="w-sub">Solo así sabemos si te pueden pedir un aval.</p><SiNo valor={mayor70} onElegir={setMayor70} /><BotonVoz /></>)}
 
         {paso === "califica" && (
@@ -337,7 +337,7 @@ export default function Pantallas() {
             <p className="w-nota"><b>Siguiente paso:</b> {lectura.siguiente}</p>
             <h2 className="w-pregunta-chica">{PREGUNTA.lectura}</h2>
             <div className="w-opciones">
-              <Opcion texto="Sí, quiero prepararla" onClick={() => ir("papeles")} />
+              <Opcion texto="Sí, quiero prepararla" onClick={() => ir("tierra")} />
               <Opcion texto="Por ahora no" onClick={() => ir("no-pedir")} />
             </div>
           </section>
