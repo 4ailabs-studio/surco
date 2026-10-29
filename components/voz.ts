@@ -1,5 +1,7 @@
 "use client";
 
+import { fetchConReintento } from "@/lib/red";
+
 /** Lee un texto en voz alta con la voz del navegador (español de México si existe). */
 export function decir(texto: string): Promise<void> {
   return new Promise((resolve) => {
@@ -28,15 +30,22 @@ export type Grabacion = { detener: () => void; resultado: Promise<string> };
 
 /** Graba y se detiene sola tras ~1.4 s de silencio (máximo 12 s); devuelve el texto transcrito por Voxtral. */
 export async function grabarYTranscribir(onNivel?: (n: number) => void, onDetenido?: () => void): Promise<Grabacion> {
+  if (typeof MediaRecorder === "undefined" || !navigator.mediaDevices?.getUserMedia) throw new Error("Este navegador no permite grabar voz.");
   const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
   const tipo = ["audio/webm;codecs=opus", "audio/mp4", "audio/webm"].find((t) => MediaRecorder.isTypeSupported(t)) ?? "";
-  const rec = new MediaRecorder(stream, tipo ? { mimeType: tipo } : undefined);
+  let rec: MediaRecorder, ctx: AudioContext, analizador: AnalyserNode;
+  try {
+    rec = new MediaRecorder(stream, tipo ? { mimeType: tipo } : undefined);
+    ctx = new AudioContext();
+    analizador = ctx.createAnalyser();
+    analizador.fftSize = 1024;
+    ctx.createMediaStreamSource(stream).connect(analizador);
+  } catch (e) {
+    stream.getTracks().forEach((t) => t.stop()); // no dejar el micrófono encendido
+    throw e;
+  }
   const trozos: Blob[] = [];
   rec.ondataavailable = (e) => { if (e.data.size) trozos.push(e.data); };
-  const ctx = new AudioContext();
-  const analizador = ctx.createAnalyser();
-  analizador.fftSize = 1024;
-  ctx.createMediaStreamSource(stream).connect(analizador);
   const buf = new Uint8Array(analizador.fftSize);
   let hablo = false, silencioDesde = 0, raf = 0;
   const inicio = performance.now();
@@ -66,8 +75,8 @@ export async function grabarYTranscribir(onNivel?: (n: number) => void, onDeteni
         const blob = new Blob(trozos, { type: rec.mimeType || "audio/webm" });
         const form = new FormData();
         form.append("audio", new File([blob], blob.type.includes("mp4") ? "voz.m4a" : "voz.webm", { type: blob.type }));
-        const r = await fetch("/api/transcribe", { method: "POST", body: form });
-        const j = await r.json();
+        const r = await fetchConReintento("/api/transcribe", { method: "POST", body: form }, { tiempoMs: 50000, intentos: 1 });
+        const j = await r.json().catch(() => ({}));
         if (!r.ok || !j.texto) throw new Error(j.error || "No escuché nada.");
         resolve(j.texto as string);
       } catch (e) { reject(e); }

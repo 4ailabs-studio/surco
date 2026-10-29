@@ -10,6 +10,7 @@ import { checklistExpediente, evaluarElegibilidad, NO_PUEDEN_EXIGIR } from "@/li
 import { balanceDecision, type Preocupacion, type Respaldo, type Uso } from "@/lib/balance";
 import { municipiosEdomex, referenciaCosto, serieMunicipio } from "@/lib/datos";
 import type { Perfil } from "@/lib/tipos";
+import { fetchConReintento } from "@/lib/red";
 
 type Paso =
   | "inicio" | "cultivo" | "hectareas" | "municipio" | "sader" | "tierra" | "edad"
@@ -60,6 +61,9 @@ export default function Pantallas() {
   const [haTexto, setHaTexto] = useState("");
   const [busca, setBusca] = useState("");
   const grab = useRef<Grabacion | null>(null);
+  const pasoRef = useRef<Paso>("inicio");
+  pasoRef.current = paso;
+  const ocupadoRef = useRef(false);
 
   // Cálculos (código determinista)
   const ha = perfil.hectareas ?? 0;
@@ -94,11 +98,17 @@ export default function Pantallas() {
   function avanzar() { ir(siguienteDe(paso)); }
   function atras() {
     callar();
+    grab.current?.detener();
+    setVoz("inactivo");
     setAviso("");
     setHistorial((h) => { const c = [...h]; const prev = c.pop(); if (prev) setPaso(prev); return c; });
   }
   function reiniciar() {
     callar();
+    grab.current?.detener();
+    setVoz("inactivo");
+    setAviso("");
+    setEscuchado("");
     setPerfil(INICIAL); setMayor70(null); setUso(null); setPreocupa(null); setRespaldo(null); setTengo({}); setHaTexto(""); setBusca("");
     setHistorial([]); setPaso("inicio");
   }
@@ -123,11 +133,14 @@ export default function Pantallas() {
   }, [paso, asistente]);
 
   async function interpretarPerfil(texto: string, pregunta: string): Promise<Partial<Perfil>> {
-    const r = await fetch("/api/perfil", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ texto, pregunta }) });
-    const j = await r.json();
-    if (!r.ok) throw new Error(j.error);
+    const r = await fetchConReintento("/api/perfil", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ texto, pregunta }) }, { tiempoMs: 35000, intentos: 1 });
+    const j = await r.json().catch(() => ({}));
+    if (!r.ok || !j.perfil) throw new Error(j.error || "No pude entender la respuesta.");
     return j.perfil as Partial<Perfil>;
   }
+
+  // Al desmontar: apagar micrófono y voz
+  useEffect(() => () => { grab.current?.detener(); callar(); }, []);
 
   // Cronómetro mientras graba
   useEffect(() => {
@@ -138,6 +151,10 @@ export default function Pantallas() {
   }, [voz]);
 
   async function escuchar() {
+    if (ocupadoRef.current) return; // evita doble toque
+    ocupadoRef.current = true;
+    const pasoInicial = paso;
+    const sigueAqui = () => pasoRef.current === pasoInicial;
     setAviso("");
     setEscuchado("");
     callar();
@@ -146,6 +163,7 @@ export default function Pantallas() {
       grab.current = g;
       setVoz("grabando");
       const texto = await g.resultado;
+      if (!sigueAqui()) return; // el usuario ya cambió de pantalla
       setEscuchado(texto);
       setVoz("entendiendo");
       const p = paso;
@@ -164,22 +182,26 @@ export default function Pantallas() {
           ok = true;
         }
       }
+      if (!sigueAqui()) return;
       if (ok) {
         setVoz("listo");
         if (asistente) await decir("Entendido.");
         else await new Promise((r) => setTimeout(r, 1100));
-        avanzar();
+        if (sigueAqui()) avanzar();
       } else {
         setVoz("error");
         setAviso("Lo escuché, pero no lo entendí. Inténtalo de nuevo o toca una opción.");
         if (asistente) decir("No te entendí. Puedes tocar una opción.");
       }
     } catch (e) {
+      if (!sigueAqui()) return;
       setVoz("error");
       const err = e as Error;
       setAviso(err.name === "NotAllowedError" || err.message?.includes("Permission")
         ? "No pude usar el micrófono. Revisa el permiso del navegador o toca una opción."
         : `${err.message} Inténtalo de nuevo o toca una opción.`);
+    } finally {
+      ocupadoRef.current = false;
     }
   }
 
@@ -204,7 +226,7 @@ export default function Pantallas() {
           <Square size={26} fill="currentColor" aria-hidden />
         </button>
       ) : (
-        <button type="button" className="w-mic" onClick={escuchar} disabled={pensando || voz === "listo"} aria-label="Responder con tu voz">
+        <button type="button" className="w-mic" onClick={escuchar} disabled={pensando || voz === "listo" || voz === "hablando"} aria-label="Responder con tu voz">
           {pensando ? <Loader2 size={30} className="w-gira" aria-hidden /> : voz === "listo" ? <Check size={32} aria-hidden /> : <Mic size={30} aria-hidden />}
         </button>
       )}
