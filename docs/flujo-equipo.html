@@ -1,0 +1,485 @@
+<title>Surco, plan del equipo</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;700;800&family=Atkinson+Hyperlegible:wght@400;700&display=swap">
+<style>
+/* Layout: una sola columna de lectura; el flujo del producto como surco vertical; el plan del equipo como horario por persona. */
+:root {
+  --tinta: #23225c;      /* maíz azul */
+  --fondo: #f4f6f1;      /* cal */
+  --papel: #ffffff;
+  --elote: #f2c230;
+  --elote-suave: #fbeeb8;
+  --milpa: #3f6b3a;
+  --milpa-suave: #e3ecdf;
+  --chile: #b3261e;
+  --chile-suave: #f6dedb;
+  --tierra: #6b5135;
+  --linea: #d5d8cf;
+  --f-titulo: "Bricolage Grotesque", "Avenir Next", system-ui, sans-serif;
+  --f-texto: "Atkinson Hyperlegible", system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --tinta: #e6e6ff; --fondo: #16163a; --papel: #1f1f4a; --elote: #f2c230; --elote-suave: #4a3f14;
+    --milpa: #8fc286; --milpa-suave: #22382a; --chile: #f08a82; --chile-suave: #4a2224; --tierra: #cdbca6; --linea: #3a3a6a;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --tinta: #e6e6ff; --fondo: #16163a; --papel: #1f1f4a; --elote: #f2c230; --elote-suave: #4a3f14;
+  --milpa: #8fc286; --milpa-suave: #22382a; --chile: #f08a82; --chile-suave: #4a2224; --tierra: #cdbca6; --linea: #3a3a6a;
+  color-scheme: dark;
+}
+body { background: var(--fondo); color: var(--tinta); font-family: var(--f-texto); font-size: 17px; line-height: 1.55; }
+.marco { max-width: 920px; margin: 0 auto; padding-block: 40px 72px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); display: grid; gap: 48px; }
+h1, h2, h3 { font-family: var(--f-titulo); line-height: 1.1; margin: 0; text-wrap: balance; }
+h1 { font-size: clamp(2.6rem, 8vw, 4.4rem); font-weight: 800; letter-spacing: -0.02em; }
+h2 { font-size: 1.75rem; font-weight: 700; }
+h3 { font-size: 1.15rem; font-weight: 700; }
+p { margin: 0; max-width: 68ch; }
+.sub { color: var(--tierra); }
+section { display: grid; gap: 16px; }
+.portada { display: grid; gap: 14px; }
+.lema { font-size: 1.3rem; max-width: 40ch; }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip { border-radius: 999px; padding: 4px 12px; font-size: 0.92rem; background: var(--papel); border: 1px solid var(--linea); }
+.chip.ok { background: var(--milpa-suave); border-color: transparent; }
+.chip.pend { background: var(--elote-suave); border-color: transparent; }
+
+/* Flujo del productor como surco */
+.surco { position: relative; display: grid; gap: 18px; padding-left: 52px; }
+.surco::before { content: ""; position: absolute; left: 19px; top: 6px; bottom: 6px; width: 3px; background: repeating-linear-gradient(var(--linea) 0 10px, transparent 10px 16px); }
+.paso { position: relative; display: grid; gap: 4px; }
+.num { position: absolute; left: -52px; top: -2px; width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center; font-family: var(--f-titulo); font-weight: 800; background: var(--papel); border: 3px solid var(--tinta); }
+.paso small { color: var(--tierra); font-size: 0.9rem; }
+
+/* Caso de demostración */
+.caso { background: var(--papel); border-top: 8px solid var(--elote); border-radius: 6px; padding: 20px 22px; display: grid; gap: 14px; }
+.cifras { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 14px; }
+.cifra { border-top: 3px solid var(--tinta); padding-top: 6px; }
+.cifra span { display: block; font-size: 0.88rem; color: var(--tierra); }
+.cifra b { font-family: var(--f-titulo); font-size: 1.5rem; font-variant-numeric: tabular-nums; }
+
+/* Equipo */
+.roles { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; }
+.rol { background: var(--papel); border: 1px solid var(--linea); border-radius: 12px; padding: 16px 18px; display: grid; gap: 8px; align-content: start; }
+.rol ul { margin: 0; padding-left: 18px; }
+.rol .quien { font-size: 0.9rem; color: var(--tierra); }
+
+/* Horario */
+.tabla-wrap { overflow-x: auto; background: var(--papel); border: 1px solid var(--linea); border-radius: 12px; }
+table { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; min-width: 560px; }
+th, td { text-align: left; padding: 10px 14px; border-bottom: 1px solid var(--linea); vertical-align: top; }
+th { font-family: var(--f-titulo); font-weight: 700; }
+tr.hito td { background: var(--elote-suave); font-weight: 700; }
+td.hora { white-space: nowrap; font-weight: 700; }
+
+/* Guion */
+.guion { display: grid; gap: 10px; counter-reset: g; }
+.linea-guion { display: grid; grid-template-columns: 96px 1fr; gap: 14px; padding: 10px 0; border-bottom: 1px dashed var(--linea); }
+.linea-guion .t { font-family: var(--f-titulo); font-weight: 700; font-variant-numeric: tabular-nums; }
+
+/* Mensajes */
+.dos { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; }
+.decir, .nodecir { border-radius: 12px; padding: 16px 18px; display: grid; gap: 8px; }
+.decir { background: var(--milpa-suave); }
+.nodecir { background: var(--chile-suave); }
+.decir ul, .nodecir ul { margin: 0; padding-left: 18px; }
+.riesgos { display: grid; gap: 10px; }
+.riesgo { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr); gap: 14px; background: var(--papel); border-left: 5px solid var(--chile); border-radius: 0 10px 10px 0; padding: 12px 16px; }
+@media (max-width: 560px) { .riesgo, .linea-guion { grid-template-columns: 1fr; gap: 4px; } }
+code { font-size: 0.92em; background: var(--papel); border: 1px solid var(--linea); border-radius: 5px; padding: 1px 5px; overflow-wrap: anywhere; }
+.idea-form { display: grid; gap: 12px; background: var(--papel); border: 1px solid var(--linea); border-radius: 12px; padding: 16px 18px; }
+.campo-idea { display: grid; gap: 6px; font-weight: 700; }
+.campo-idea textarea, .campo-idea select { font: inherit; font-weight: 400; color: var(--tinta); background: var(--fondo); border: 2px solid var(--linea); border-radius: 10px; padding: 10px 12px; width: 100%; }
+.idea-fila { display: flex; flex-wrap: wrap; gap: 12px; align-items: end; }
+.idea-fila .campo-idea { flex: 1 1 200px; }
+.boton-idea { font: inherit; font-weight: 700; border: 0; border-radius: 12px; padding: 12px 20px; min-height: 48px; background: var(--elote); color: #23225c; cursor: pointer; }
+.boton-idea:disabled { opacity: .5; cursor: default; }
+.lista-ideas { display: grid; gap: 10px; }
+.idea { background: var(--papel); border: 1px solid var(--linea); border-left: 6px solid var(--linea); border-radius: 0 10px 10px 0; padding: 12px 16px; display: grid; gap: 6px; min-width: 0; }
+.idea.aceptada { border-left-color: var(--milpa); }
+.idea.descartada { border-left-color: var(--chile); opacity: .75; }
+.idea p { overflow-wrap: anywhere; }
+.idea-meta { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; font-size: 0.9rem; color: var(--tierra); }
+.pill { border-radius: 999px; padding: 1px 10px; font-size: 0.85rem; background: var(--fondo); border: 1px solid var(--linea); color: var(--tinta); }
+.pill.aceptada { background: var(--milpa-suave); border-color: transparent; }
+.pill.descartada { background: var(--chile-suave); border-color: transparent; }
+.revision { display: flex; gap: 6px; flex-wrap: wrap; }
+.revision button { font: inherit; font-size: 0.9rem; border: 1px solid var(--linea); background: var(--fondo); color: var(--tinta); border-radius: 8px; padding: 4px 10px; cursor: pointer; }
+.diagrama { overflow-x: auto; background: #ffffff; border: 1px solid var(--linea); border-radius: 12px; padding: 16px; }
+.diagrama pre { margin: 0; color: #23225c; }
+.pie { color: var(--tierra); font-size: 0.92rem; border-top: 1px solid var(--linea); padding-top: 16px; }
+</style>
+
+<div class="marco">
+  <header class="portada">
+    <h1>Surco</h1>
+    <p class="lema">Prepara tu crédito de avío paso a paso, y decide con los números de tu municipio.</p>
+    <p class="sub">Hackatón SECIHTI–CIDE con NVIDIA · track Campo inteligente · 29 de octubre de 2026. Plan de trabajo del equipo hasta la presentación de las 16:00.</p>
+    <div class="chips" aria-label="Estado del proyecto">
+      <span class="chip ok">Tablero funcionando</span>
+      <span class="chip ok">Voz con Voxtral</span>
+      <span class="chip ok">20 pruebas pasan</span>
+      <span class="chip ok">README con fuentes</span>
+      <span class="chip pend">Ensayo del pitch</span>
+    </div>
+  </header>
+
+  <section aria-labelledby="problema">
+    <h2 id="problema">El problema en tres datos</h2>
+    <p>Solo 6.1 % de las unidades de producción obtuvo crédito en 2022; en el Estado de México, 1.1 % (Censo Agropecuario 2022, INEGI). Casi todos los que piden lo consiguen: en 2019, 9.4 % solicitó y 8.4 % obtuvo (ENA 2019). Quienes no piden dicen que es por intereses altos (64 %), muchos requisitos (50 %) y no querer endeudarse (45 %) (ENA 2014).</p>
+    <p class="sub">Conclusión: el cuello de botella no es el banco, es decidir y prepararse. Ahí entra Surco.</p>
+  </section>
+
+  <section aria-labelledby="flujo">
+    <h2 id="flujo">Lo que hace el productor en Surco</h2>
+    <div class="surco">
+      <div class="paso"><span class="num" aria-hidden="true">1</span><h3>Cuéntanos de tu parcela</h3><p>Habla o escribe: cultivo, hectáreas, municipio, si está en un programa de SADER. Voxtral transcribe y un modelo de Mistral llena los datos.</p><small>No se guarda el audio ni el perfil.</small></div>
+      <div class="paso"><span class="num" aria-hidden="true">2</span><h3>¿Calificas?</h3><p>Reglas publicadas de Cosechando Soberanía. Nunca dice "no": dice qué confirmar en la CADER y, si su cultivo no entra, le muestra otras rutas.</p></div>
+      <div class="paso"><span class="num" aria-hidden="true">3</span><h3>Haz tus cuentas</h3><p>Costo de FIRA Agrocostos con rendimiento y precio reales de su municipio (SIAP 2015–2025). Costo con y sin bonificación, punto de equilibrio y alerta de riesgo.</p></div>
+      <div class="paso"><span class="num" aria-hidden="true">4</span><h3>¿Qué te frena?</h3><p>Tres preguntas inspiradas en la entrevista motivacional: distingue miedo, falta de recursos o riesgo real. No pedir también es una buena respuesta.</p></div>
+      <div class="paso"><span class="num" aria-hidden="true">5</span><h3>Junta tus papeles</h3><p>Solo si decidió pedir: 14 requisitos y lo que no le pueden pedir (casa en garantía, prenda, garantía líquida, seguro de vida).</p></div>
+      <div class="paso"><span class="num" aria-hidden="true">6</span><h3>Llévate tu hoja</h3><p>Una hoja de una página para la CADER o el intermediario, con los datos declarados marcados y el aviso de que no implica aprobación.</p></div>
+    </div>
+  </section>
+
+  <section aria-labelledby="diagrama-productor">
+    <h2 id="diagrama-productor">Diagrama 1. Flujo del productor y agentes que intervienen</h2>
+    <p class="sub">Los recuadros amarillos son agentes de IA; los azules son código determinista; los verdes son datos públicos. La IA solo entiende la voz: las reglas y las cuentas las hace el código.</p>
+    <div class="diagrama">
+<pre class="mermaid">
+flowchart TD
+  P([Productor o técnico de la CADER]) --> V{¿Habla o escribe?}
+  V -- Habla --> A1[Agente de voz<br/>Voxtral de Mistral<br/>audio a texto]
+  V -- Escribe --> T[Texto escrito]
+  A1 --> A2[Agente extractor<br/>Mistral Small<br/>texto a datos: hectáreas, municipio, programa]
+  T --> A2
+  A2 --> N[Normalizador<br/>valida y corrige datos dudosos]
+  N --> PERF[Perfil del productor<br/>editable, no se guarda]
+  PERF --> R1[Motor de reglas<br/>¿Calificas? y otras rutas]
+  R1 --> C[Calculadora<br/>monto, intereses, equilibrio, alerta]
+  C --> B[Balance de decisión<br/>¿Qué te frena?<br/>miedo, recursos o riesgo]
+  B -- Decide no pedir --> NO([Decisión informada:<br/>no pedir o pedir menos])
+  B -- Decide pedir --> R2[Expediente<br/>14 requisitos y lo que no pueden pedir]
+  D1[(SIAP 2015-2025<br/>rendimiento y precio por municipio)] --> C
+  D2[(FIRA Agrocostos<br/>costo por hectárea)] --> C
+  D3[(Lineamientos FIRA<br/>Cosechando Soberanía)] --> R1
+  D3 --> R2
+  R2 --> H[Hoja de una página<br/>no implica aprobación]
+  C --> H
+  H --> F([CADER o intermediario financiero])
+  classDef ia fill:#fbeeb8,stroke:#b8900f,color:#23225c
+  classDef codigo fill:#e4e4f3,stroke:#23225c,color:#23225c
+  classDef datos fill:#e3ecdf,stroke:#3f6b3a,color:#23225c
+  class A1,A2 ia
+  class N,R1,R2,C,H,PERF,B codigo
+  class D1,D2,D3 datos
+</pre>
+    </div>
+  </section>
+
+  <section aria-labelledby="diagrama-arquitectura">
+    <h2 id="diagrama-arquitectura">Diagrama 2. Arquitectura técnica</h2>
+    <p class="sub">La clave de Mistral vive solo en el servidor. El audio pasa por la petición y no se guarda.</p>
+    <div class="diagrama">
+<pre class="mermaid">
+flowchart LR
+  subgraph Navegador
+    UI[Tablero Surco<br/>Next.js]
+    MIC[Micrófono]
+  end
+  subgraph Servidor
+    RT[/api/transcribe/]
+    RP[/api/perfil/]
+    LIB[Lógica en lib/<br/>crédito, cuentas, expediente, balance<br/>20 pruebas automáticas]
+  end
+  subgraph Mistral
+    VOX[Voxtral]
+    CHAT[Mistral Small]
+  end
+  JSON[(Datos procesados<br/>data/*.json)]
+  MIC --> UI
+  UI -- audio --> RT --> VOX
+  VOX -- texto --> RT --> UI
+  UI -- texto --> RP --> CHAT
+  CHAT -- JSON --> RP --> UI
+  JSON --> UI
+  LIB --> UI
+</pre>
+    </div>
+  </section>
+
+  <section aria-labelledby="diagrama-equipo">
+    <h2 id="diagrama-equipo">Diagrama 3. Proceso del equipo con revisión humana</h2>
+    <p class="sub">Así se construyó y así se sigue mejorando: los agentes investigan, critican y construyen; las decisiones las toma una persona.</p>
+    <div class="diagrama">
+<pre class="mermaid">
+flowchart TD
+  I([Idea del equipo]) --> AG1[Agentes investigadores<br/>datos, motivos, evidencia]
+  AG1 --> AG2[Revisor externo<br/>critica sin conocer la propuesta]
+  AG2 --> HR1{Revisión humana<br/>Miguel decide}
+  HR1 -- No --> I
+  HR1 -- Sí --> DIS[Diseño escrito]
+  DIS --> AG3[Agente constructor<br/>lee el diseño y marca dudas]
+  AG3 --> HR2{Revisión humana<br/>responde dudas y aprueba}
+  HR2 --> COD[Construcción<br/>pruebas automáticas]
+  COD --> HR3{Revisión humana<br/>prueba la app}
+  HR3 -- Ajustes --> COD
+  HR3 -- Lista --> CONG[15:20 código congelado]
+  CONG --> DEMO([16:00 presentación])
+  IDEAS[Ideas del equipo<br/>en esta página] --> HR1
+  classDef ia fill:#fbeeb8,stroke:#b8900f,color:#23225c
+  classDef humano fill:#e3ecdf,stroke:#3f6b3a,color:#23225c
+  class AG1,AG2,AG3 ia
+  class HR1,HR2,HR3 humano
+</pre>
+    </div>
+  </section>
+
+  <section aria-labelledby="agentes">
+    <h2 id="agentes">Los agentes, uno por uno</h2>
+    <div class="tabla-wrap">
+      <table>
+        <thead><tr><th>Agente</th><th>Qué hace</th><th>Dónde actúa</th><th>Quién revisa</th></tr></thead>
+        <tbody>
+          <tr><td>Voz (Voxtral)</td><td>Convierte lo que dice el productor en texto</td><td>En la app, paso 1</td><td>El productor corrige el texto</td></tr>
+          <tr><td>Extractor (Mistral Small)</td><td>Saca hectáreas, municipio, programa y edad del texto; no inventa</td><td>En la app, paso 1</td><td>Normalizador y el productor</td></tr>
+          <tr><td>Investigadores</td><td>Buscan cifras oficiales y evidencia, marcan lo no verificado</td><td>En la construcción</td><td>Miguel</td></tr>
+          <tr><td>Revisor externo</td><td>Critica las ideas sin ver la recomendación</td><td>En la construcción</td><td>Miguel</td></tr>
+          <tr><td>Constructor</td><td>Lee el diseño, señala dudas y escribe el código con pruebas</td><td>En la construcción</td><td>Miguel y las pruebas</td></tr>
+          <tr><td>Balance de decisión</td><td>Lee las respuestas y el riesgo del municipio; distingue miedo, recursos o riesgo. Con reglas, sin modelo</td><td>En la app, paso 4</td><td>El productor decide</td></tr>
+          <tr><td>Entrevista motivacional conversacional</td><td>Conversaría para resolver dudas y miedos, sin empujar a endeudarse</td><td>Ruta de mejora</td><td>Miguel, con su experiencia clínica</td></tr>
+          <tr><td>Asistente con citas</td><td>Respondería dudas solo con documentos oficiales</td><td>Ruta de mejora, no está en la demo</td><td>Pendiente</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section aria-labelledby="caso">
+    <h2 id="caso">El caso de la demo: 3 hectáreas en Toluca</h2>
+    <div class="caso">
+      <p>La referencia de FIRA supone 7 t/ha. SIAP dice que en Toluca se cosechan 4.3 a 4.6 t/ha. Con el rendimiento real, el crédito casi no deja ganancia. Surco lo muestra antes de que el productor firme.</p>
+      <div class="cifras">
+        <div class="cifra"><span>Monto sugerido</span><b>$89,535</b></div>
+        <div class="cifra"><span>Venta esperada</span><b>$96,330</b></div>
+        <div class="cifra"><span>Le quedaría</span><b>$1,721</b></div>
+        <div class="cifra"><span>Para no perder</span><b>4.4 t/ha</b></div>
+      </div>
+      <p class="sub">Interés a 8 meses: $10,446 a 17.5 % o $5,074 a 8.5 % si paga a tiempo. Cifras calculadas por la app con las referencias públicas; el ejemplo es ilustrativo.</p>
+    </div>
+  </section>
+
+  <section aria-labelledby="equipo">
+    <h2 id="equipo">Quién hace qué</h2>
+    <p class="sub">Propuesta para un equipo de 3 o 4 personas. Ajústenla con los nombres reales.</p>
+    <div class="roles">
+      <div class="rol">
+        <h3>Presentación</h3>
+        <span class="quien">Miguel (médico, dueño de la idea)</span>
+        <ul>
+          <li>Ensaya el guion de 3 minutos con el caso de Toluca.</li>
+          <li>Prueba el micrófono en la laptop de la demo, en Chrome.</li>
+          <li>Responde preguntas del jurado sobre el problema y el usuario.</li>
+        </ul>
+      </div>
+      <div class="rol">
+        <h3>Producto y demo</h3>
+        <span class="quien">Persona 2</span>
+        <ul>
+          <li>Corre la app en la laptop: <code>npm run start -- -p 3210</code>.</li>
+          <li>Prueba los 5 pasos y "Cargar ejemplo" sin internet.</li>
+          <li>Anota cualquier error y lo reporta antes de las 15:30.</li>
+        </ul>
+      </div>
+      <div class="rol">
+        <h3>Datos y README</h3>
+        <span class="quien">Persona 3</span>
+        <ul>
+          <li>Revisa el README con la tabla de fuentes y su trazabilidad.</li>
+          <li>Confirma en el original de FIRA las reglas marcadas como "reportado".</li>
+          <li>Prepara la respuesta a "¿de dónde salen estos números?".</li>
+        </ul>
+      </div>
+      <div class="rol">
+        <h3>Impacto y ruta de mejora</h3>
+        <span class="quien">Persona 4, o se reparte</span>
+        <ul>
+          <li>Explica el impacto como escenario: $8,800 por productor que paga a tiempo.</li>
+          <li>Propone el piloto con técnicos de la CADER.</li>
+          <li>Junta 2 o 3 preguntas difíciles del jurado y sus respuestas.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section aria-labelledby="horario">
+    <h2 id="horario">Horario hasta las 16:00</h2>
+    <div class="tabla-wrap">
+      <table>
+        <thead><tr><th>Hora</th><th>Qué</th><th>Quién</th></tr></thead>
+        <tbody>
+          <tr><td class="hora">14:30–15:00</td><td>README con fuentes; prueba completa de la app; lectura de este plan</td><td>Datos · Producto</td></tr>
+          <tr><td class="hora">15:00–15:20</td><td>Ajustes finales del tablero; respuestas a preguntas difíciles</td><td>Producto · Impacto</td></tr>
+          <tr class="hito"><td class="hora">15:20</td><td>Se congela el código: ya no se cambia nada</td><td>Todos</td></tr>
+          <tr><td class="hora">15:20–15:45</td><td>Dos ensayos del guion con cronómetro, uno con voz y otro con "Cargar ejemplo"</td><td>Presentación</td></tr>
+          <tr><td class="hora">15:45–16:00</td><td>Laptop cargada, app abierta, micrófono probado, pestaña de respaldo lista</td><td>Producto</td></tr>
+          <tr class="hito"><td class="hora">16:00</td><td>Presentación y premiación en vivo</td><td>Todos</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section aria-labelledby="guion">
+    <h2 id="guion">Guion de 3 minutos</h2>
+    <div class="guion">
+      <div class="linea-guion"><span class="t">0:00–0:30</span><p>El problema: en el Estado de México solo 1.1 % tiene crédito, contra 34.5 % en Sinaloa. Casi todos los que piden lo obtienen; el problema es que pocos piden, por intereses, requisitos y miedo a endeudarse.</p></div>
+      <div class="linea-guion"><span class="t">0:30–1:15</span><p>Un productor habla: "Siembro 3 hectáreas de maíz en Toluca y estoy en Producción para el Bienestar". Se llenan sus datos y aparece si califica.</p></div>
+      <div class="linea-guion"><span class="t">1:15–2:15</span><p>Sus cuentas con datos de Toluca: con el rendimiento real le quedarían $1,721 y necesita 4.4 t/ha para no perder. En "¿Qué te frena?", Surco le dice que lo que lo frena son los recursos, no el miedo. Si decide pedir, sus papeles y lo que no le pueden pedir.</p></div>
+      <div class="linea-guion"><span class="t">2:15–2:40</span><p>La hoja de una página que lleva a su CADER o a su intermediario.</p></div>
+      <div class="linea-guion"><span class="t">2:40–3:00</span><p>Impacto como escenario y siguiente paso: piloto con técnicos de la CADER, medido con expedientes completos que llegan al intermediario.</p></div>
+    </div>
+  </section>
+
+  <section aria-labelledby="mensajes">
+    <h2 id="mensajes">Qué decir y qué no</h2>
+    <div class="dos">
+      <div class="decir">
+        <h3>Sí decir</h3>
+        <ul>
+          <li>Ayuda a decidir bien antes de endeudarse y a llegar preparado.</li>
+          <li>Usa datos públicos y trazables: SIAP, FIRA e INEGI.</li>
+          <li>Los cálculos los hace el código; la IA solo entiende la voz.</li>
+          <li>Complementa a FIRA y SADER; no compite con ellos.</li>
+        </ul>
+      </div>
+      <div class="nodecir">
+        <h3>No decir</h3>
+        <ul>
+          <li>"Más crédito para el campo" o "más gente va a pedir": no lo podemos demostrar todavía.</li>
+          <li>"Preaprobado" o "te conviene": no evaluamos solvencia.</li>
+          <li>"1.1 % con seguro": el dato nacional es 1.9 % con seguro; el 1.1 % es crédito en el Estado de México.</li>
+          <li>"6.7 %" con crédito: es 6.1 %. Y no es "11 %" en el Estado de México: es 1.1 %.</li>
+          <li>"Precalifícate": suena a preaprobación bancaria. Mejor "revisa si calificas".</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section aria-labelledby="riesgos">
+    <h2 id="riesgos">Riesgos y respuesta preparada</h2>
+    <div class="riesgos">
+      <div class="riesgo"><b>"FIRA ya tiene Agrocostos y AgroBitácora."</b><p>Sí, y los usamos como fuente. Surco suma voz, datos de su municipio, la lista de lo que no te pueden pedir y una hoja lista para el intermediario.</p></div>
+      <div class="riesgo"><b>"¿El productor de 65 años lo va a usar?"</b><p>Por eso es por voz. El usuario más realista hoy es el técnico de la CADER que atiende a muchos productores.</p></div>
+      <div class="riesgo"><b>"Los costos de FIRA son de 2022."</b><p>Por eso se muestran con su año y el productor puede cambiarlos. La ruta de mejora usa los PDF vigentes.</p></div>
+      <div class="riesgo"><b>Falla la voz o el internet en el escenario.</b><p>Botón "Escribir en lugar de hablar" y "Cargar ejemplo", que funciona sin conexión.</p></div>
+    </div>
+  </section>
+
+  <section aria-labelledby="donde">
+    <h2 id="donde">Dónde está todo</h2>
+    <p>Código: <code>/Users/miguel/Hackaton-ADA/surco/</code>. Diseño: <code>docs/superpowers/specs/</code>. Plan técnico: <code>docs/superpowers/plans/</code>. Datos procesados: <code>data/</code>. La app corre en la laptop en <code>http://localhost:3210</code>.</p>
+  </section>
+
+  <section aria-labelledby="ideas">
+    <h2 id="ideas">Propón una idea</h2>
+    <p class="sub">Cada idea queda guardada para todo el equipo. Miguel las revisa y marca cuáles entran antes de las 15:20; después de esa hora ya no se cambia el código.</p>
+    <form id="form-idea" class="idea-form">
+      <label class="campo-idea" for="idea-texto"><span>Tu idea</span>
+        <textarea id="idea-texto" rows="3" maxlength="600" placeholder="Por ejemplo: mostrar el teléfono de la CADER más cercana en la hoja" required></textarea>
+      </label>
+      <div class="idea-fila">
+        <label class="campo-idea" for="idea-area"><span>Sobre qué</span>
+          <select id="idea-area">
+            <option>Producto</option><option>Datos</option><option>Pitch</option><option>Riesgo</option><option>Otra</option>
+          </select>
+        </label>
+        <button type="submit" id="idea-enviar" class="boton-idea">Agregar idea</button>
+      </div>
+      <p id="idea-estado" class="sub" role="status"></p>
+    </form>
+    <div id="lista-ideas" class="lista-ideas">
+      <p class="sub">Todavía no hay ideas. Escribe la primera arriba.</p>
+    </div>
+  </section>
+
+  <p class="pie">Cifras de crédito y seguro: INEGI, Censo Agropecuario 2022 y ENA 2019 (verificadas). Motivos de no solicitar: ENA 2014 y reglas de Cosechando Soberanía: lineamientos de FIRA, edición 8 (reportadas, por confirmar en el original).</p>
+</div>
+<script>
+(async () => {
+  const form = document.getElementById("form-idea");
+  const texto = document.getElementById("idea-texto");
+  const area = document.getElementById("idea-area");
+  const enviar = document.getElementById("idea-enviar");
+  const estado = document.getElementById("idea-estado");
+  const lista = document.getElementById("lista-ideas");
+  const ESTADOS = { propuesta: "Por revisar", aceptada: "Entra", descartada: "No entra" };
+
+  const use = window.claude && window.claude.use ? window.claude.use : null;
+  const [db, user] = use ? await Promise.all([use("db"), use("user")]) : [null, null];
+  if (!db) {
+    enviar.disabled = true;
+    estado.textContent = "Para proponer ideas, abre esta página con tu cuenta de claude.ai.";
+    return;
+  }
+  const yo = user ? await user.id() : null;
+  const revisor = user ? await user.canEdit() : false;
+  const ideas = db.collection("ideas");
+
+  function fecha(iso) {
+    try { return new Date(iso).toLocaleTimeString("es-MX", { hour: "2-digit", minute: "2-digit" }); } catch { return ""; }
+  }
+
+  async function pintar(snap) {
+    const docs = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+    if (!docs.length) { lista.replaceChildren(Object.assign(document.createElement("p"), { className: "sub", textContent: "Todavía no hay ideas. Escribe la primera arriba." })); return; }
+    const ids = [...new Set(docs.map((d) => d.autor).filter(Boolean))];
+    let perfiles = {};
+    try { perfiles = user && ids.length ? await user.profiles(ids) : {}; } catch { perfiles = {}; }
+    lista.replaceChildren(...docs.map((d) => {
+      const st = ESTADOS[d.estado] ? d.estado : "propuesta";
+      const el = document.createElement("article");
+      el.className = "idea " + st;
+      const p = document.createElement("p"); p.textContent = String(d.texto || "");
+      const meta = document.createElement("div"); meta.className = "idea-meta";
+      const pill = document.createElement("span"); pill.className = "pill " + st; pill.textContent = ESTADOS[st];
+      const info = document.createElement("span");
+      const nombre = (perfiles[d.autor] && perfiles[d.autor].name) || "Alguien del equipo";
+      info.textContent = `${String(d.area || "Otra")} · ${nombre} · ${fecha(d.creado)}`;
+      meta.append(pill, info);
+      el.append(p, meta);
+      if (revisor) {
+        const rev = document.createElement("div"); rev.className = "revision";
+        [["aceptada", "Marcar que entra"], ["descartada", "Marcar que no entra"], ["propuesta", "Regresar a revisión"]].forEach(([v, t]) => {
+          if (v === st) return;
+          const b = document.createElement("button"); b.type = "button"; b.textContent = t;
+          b.addEventListener("click", async () => {
+            try { await ideas.doc(d.id).update({ estado: v }); } catch (e) { estado.textContent = "No se pudo cambiar el estado: " + (e.message || e.code); }
+          });
+          rev.append(b);
+        });
+        el.append(rev);
+      }
+      return el;
+    }));
+  }
+
+  ideas.orderBy("creado", "desc").onSnapshot(pintar, (e) => { estado.textContent = "No se pudieron cargar las ideas (" + e.code + ")."; });
+
+  form.addEventListener("submit", async (ev) => {
+    ev.preventDefault();
+    const t = texto.value.trim();
+    if (!t) { estado.textContent = "Escribe tu idea antes de agregarla."; return; }
+    enviar.disabled = true;
+    try {
+      await ideas.add({ texto: t.slice(0, 600), area: area.value, autor: yo, creado: new Date().toISOString(), estado: "propuesta" });
+      texto.value = "";
+      estado.textContent = "Idea agregada.";
+    } catch (e) {
+      estado.textContent = e.code === "permission_denied" || e.code === "not_granted"
+        ? "Tu acceso a esta página es solo de lectura. Pide a Miguel que te dé permiso para participar."
+        : "No se pudo guardar la idea. Intenta de nuevo.";
+    } finally { enviar.disabled = false; }
+  });
+})();
+</script>
