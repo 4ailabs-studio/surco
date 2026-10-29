@@ -1,12 +1,12 @@
 # Surco
 
-**Prepara tu crédito de avío paso a paso, y decide con los números de tu municipio.**
+**Decide con calma si pedir un crédito para tu siembra, con los números de tu municipio, y llega preparado.**
 
 Hackatón SECIHTI–CIDE con NVIDIA, CDMX, 29 de octubre de 2026. Track: Campo inteligente.
 
-**Pruébalo:** https://surco-ivory.vercel.app (presiona "Cargar ejemplo" o usa el micrófono).
+**Pruébalo:** https://surco-ivory.vercel.app (elige "Empezar sin voz" para contestar con botones, o "Empezar con asistente de voz"). Ejemplo sugerido: maíz, 3 hectáreas, Toluca.
 
-![Tablero de Surco con el ejemplo de 3 hectáreas de maíz en Toluca: a la izquierda los pasos, a la derecha la hoja que se lleva al intermediario](docs/img/tablero.png)
+![Pantalla de inicio de Surco: "Hola, soy Surco", con las opciones de empezar con asistente de voz o sin voz](docs/img/inicio.png)
 
 ## Equipo
 
@@ -25,22 +25,26 @@ El cuello de botella no es el banco: es decidir y prepararse.
 
 ## Qué hace Surco
 
-Acompaña a un pequeño productor (o al técnico que lo atiende) en seis pasos:
+Acompaña al pequeño productor (o al técnico que lo atiende) con **una pregunta por pantalla**. Contesta con botones grandes, con su voz, o con un **asistente de voz** que lee cada pregunta en voz alta y lo escucha. El "crédito de avío" es el crédito para la siembra: cubre semilla, fertilizante y mano de obra de un ciclo, y se paga con la cosecha.
 
-1. **Cuéntanos de tu parcela**, por voz o por escrito. Voxtral (Mistral) transcribe y Mistral Small extrae los datos; un normalizador valida lo dudoso.
+1. **Su parcela:** qué siembra, cuántas hectáreas, en qué municipio y si está en un programa de SADER. La voz la transcribe Voxtral (Mistral) y Mistral Small extrae los datos; un normalizador valida lo dudoso.
 2. **¿Calificas?** con las reglas publicadas de Cosechando Soberanía. Nunca dice "no": dice qué confirmar en la CADER y muestra otras rutas.
-3. **Haz tus cuentas** con el costo de FIRA Agrocostos y el rendimiento y precio reales de su municipio (SIAP): costo con y sin bonificación, punto de equilibrio y alerta de riesgo.
+3. **Tus cuentas** con el costo de FIRA Agrocostos y el rendimiento y precio reales de su municipio (SIAP): cuánto le quedaría, cuánto necesita cosechar para no perder y el costo con y sin bonificación.
 4. **¿Qué te frena?**: un balance de decisión inspirado en la entrevista motivacional que distingue miedo, falta de recursos o riesgo real. No pedir también es una buena respuesta.
-5. **Junta tus papeles** (solo si decide pedir), incluida la lista de lo que no le pueden exigir.
-6. **Llévate tu hoja**: una página para la CADER o el intermediario, con los datos declarados marcados.
+5. **Sus papeles, solo si decide pedir:** la tierra, el aval y la lista de documentos, incluido lo que no le pueden exigir. Van al final para que no sean un obstáculo.
+6. **Su hoja:** una página para la CADER o el intermediario, con los datos declarados marcados.
+
+![Una pregunta por pantalla, con botones Sí, No y No sé, y el micrófono para responder con la voz](docs/img/pregunta.png)
+
+La versión anterior, en forma de tablero, sigue disponible en `/tablero`.
 
 ### El caso que muestra para qué sirve
 
 Con 3 hectáreas de maíz en Toluca, la referencia de FIRA supone 7 t/ha, pero SIAP registra 4.3 a 4.6 t/ha en ese municipio. Con el rendimiento real, después de pagar el crédito le quedarían **$1,721**, y necesita cosechar **4.4 t/ha** para no perder. Surco lo muestra antes de que el productor firme.
 
-![Paso "Haz tus cuentas": venta esperada, costo con intereses, lo que le quedaría y el rendimiento para no perder, con el costo a 17.5 % y a 8.5 % pagando a tiempo](docs/img/cuentas.png)
+![Pantalla "Tus cuentas": te quedaría $1,721 después de pagar; pedirías $89,535, venderías $96,330 y necesitas 4.4 t/ha para no perder](docs/img/cuentas.png)
 
-![Paso "¿Qué te frena?": tres preguntas y una lectura que distingue miedo, falta de recursos o riesgo real](docs/img/que-te-frena.png)
+![Lectura final: "Lo que te frena son los recursos", con la pregunta de si quiere preparar su solicitud o por ahora no](docs/img/que-te-frena.png)
 
 **Lo que no hace:** no tramita créditos, no evalúa solvencia, no promete aprobación, no recomienda intermediarios y no guarda audio ni datos personales. Los cálculos los hace el código; la IA solo entiende la voz.
 
@@ -67,7 +71,7 @@ Beneficio por productor que paga a tiempo = bonificación de 9 puntos de interé
 npm install
 # crear .env.local con MISTRAL_API_KEY=... (solo para la voz)
 npm run build && npm run start -- -p 3210
-npm test   # 20 pruebas
+npm test   # 25 pruebas
 ```
 
 Sin clave de Mistral todo funciona excepto la voz; "Cargar ejemplo" funciona sin conexión.
