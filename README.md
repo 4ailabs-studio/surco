@@ -79,7 +79,7 @@ Sin clave de Mistral todo funciona excepto la voz; "Cargar ejemplo" funciona sin
 ## Ruta de mejora
 
 1. Piloto medido con técnicos de la CADER.
-2. Entrevista motivacional conversacional (con experiencia clínica del equipo).
+2. **Surco en vivo:** agente de voz en tiempo real con Gemini Live API que conversa con el productor renuente con entrevista motivacional, sin empujarlo a endeudarse, y calcula con las reglas de Surco. Detalle en [docs/surco-en-vivo.md](docs/surco-en-vivo.md).
 3. Asistente con citas, entrenado solo en documentos de FIRA y SADER.
 4. Canal por WhatsApp; datos de Agrocostos 2024–2026; más cultivos y estados.
 

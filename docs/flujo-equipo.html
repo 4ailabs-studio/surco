@@ -381,6 +381,50 @@ flowchart TD
     <p>App en línea: <a href="https://surco-ivory.vercel.app">surco-ivory.vercel.app</a>. Repositorio público: <a href="https://github.com/4ailabs-studio/surco">github.com/4ailabs-studio/surco</a>. Copia local: <code>/Users/miguel/Hackaton-ADA/surco/</code>. Diseño: <code>docs/superpowers/specs/</code>. Plan técnico: <code>docs/superpowers/plans/</code>. Datos procesados: <code>data/</code>. La app corre en la laptop en <code>http://localhost:3210</code>.</p>
   </section>
 
+  <section aria-labelledby="en-vivo">
+    <h2 id="en-vivo">Siguiente versión: Surco en vivo</h2>
+    <p>Para el productor renuente que no sabe qué decir: un agente de voz en tiempo real con <b>Gemini Live API</b> que conversa como una persona, se puede interrumpir, usa entrevista motivacional y calcula con las reglas de Surco. No está en la demo de hoy.</p>
+    <div class="diagrama">
+<pre class="mermaid">
+flowchart LR
+  P([Productor renuente]) <-- voz en vivo --> NAV[Surco en el navegador]
+  NAV -- pide token temporal --> SRV[Servidor Surco]
+  SRV -- crea token --> G[Gemini Live API]
+  NAV <-- audio en tiempo real --> G
+  G -- llama función --> SRV
+  SRV --> REG[Reglas, cuentas y balance<br/>código de Surco, no la IA]
+  REG --> SRV --> G
+  G --> D{Decisión informada}
+  D -- Pedir --> H[Hoja de una página]
+  D -- No pedir o pedir menos --> OK([Resultado válido, sin presión])
+  classDef ia fill:#fbeeb8,stroke:#b8900f,color:#23225c
+  classDef codigo fill:#e4e4f3,stroke:#23225c,color:#23225c
+  class G ia
+  class REG,SRV,H codigo
+</pre>
+    </div>
+    <div class="dos">
+      <div class="decir">
+        <h3>Por qué sirve</h3>
+        <ul>
+          <li>Conversación natural: escucha, refleja y pregunta qué le preocupa.</li>
+          <li>Evidencia: los chatbots motivacionales suben la motivación a corto plazo (ensayo con 237 personas, 2026).</li>
+          <li>Las cifras salen de nuestras funciones, no del modelo.</li>
+        </ul>
+      </div>
+      <div class="nodecir">
+        <h3>Qué cuidar</h3>
+        <ul>
+          <li>No empujar a endeudarse: "no pedir" es un resultado válido.</li>
+          <li>El efecto motivacional no duró 24 horas en el ensayo: no prometer cambios de conducta.</li>
+          <li>Necesita internet estable; se conserva la versión actual para mala señal.</li>
+          <li>El audio va a Google: consentimiento claro.</li>
+        </ul>
+      </div>
+    </div>
+    <p class="sub">Construirlo toma de 1.5 a 2 horas y requiere una clave de la API de Gemini. Detalle técnico y fuentes en <code>docs/surco-en-vivo.md</code> del repositorio.</p>
+  </section>
+
   <section aria-labelledby="ideas">
     <h2 id="ideas">Propón una idea</h2>
     <p class="sub">Cada idea queda guardada para todo el equipo. Miguel las revisa y marca cuáles entran antes de las 15:20; después de esa hora ya no se cambia el código.</p>
