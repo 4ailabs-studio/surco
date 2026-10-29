@@ -237,3 +237,6 @@ details summary { cursor: pointer; font-weight: 700; margin-top: 14px; }
 @media (prefers-reduced-motion: no-preference) {
   .asistente-punto.hablando, .asistente-punto.grabando { animation: latido 1s ease-in-out infinite; }
 }
+.guia-municipio { max-width: 460px; }
+.guia-municipio input { border: 2px solid var(--linea); border-radius: 10px; padding: 10px 12px; min-height: 48px; width: 100%; background: var(--papel); }
+.guia-municipio input:focus { border-color: var(--azul); outline: none; }

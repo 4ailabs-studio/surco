@@ -112,7 +112,7 @@ export default function Tablero() {
             <h2 id="p1">Cuéntanos de tu parcela</h2>
             <p className="paso-sub">Con esto calculamos todo lo demás. No guardamos tus datos.</p>
             <div className="panel campos">
-              <GuiaVoz perfil={perfil} onPerfil={(p) => { setPerfil((prev) => ({ ...prev, ...p })); setEsEjemplo(false); }} />
+              <GuiaVoz perfil={perfil} municipios={municipios} onPerfil={(p) => { setPerfil((prev) => ({ ...prev, ...p })); setEsEjemplo(false); }} />
               <div className="acciones">
                 <button type="button" className="boton secundario" onClick={cargarEjemplo}>Cargar ejemplo</button>
                 {esEjemplo && <span className="etiqueta-ejemplo">Ejemplo, sin verificar</span>}

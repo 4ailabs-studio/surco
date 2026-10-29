@@ -14,7 +14,7 @@ type Pregunta = {
 
 const PREGUNTAS: Pregunta[] = [
   { clave: "cultivoHa", texto: "¿Qué siembras y cuántas hectáreas?", ayuda: "Por ejemplo: “Maíz, tres hectáreas”." },
-  { clave: "municipio", texto: "¿En qué municipio está tu parcela?", ayuda: "Por ejemplo: “En Toluca”." },
+  { clave: "municipio", texto: "¿En qué municipio está tu parcela?", ayuda: "Dilo con tu voz, por ejemplo “En Toluca”, o búscalo en la lista." },
   { clave: "beneficiarioSader", texto: "¿Estás en algún programa de SADER, como Producción para el Bienestar?", ayuda: "Contesta con tu voz o toca una opción.",
     rapidas: [["Sí", { beneficiarioSader: true }], ["No", { beneficiarioSader: false }], ["No sé", { beneficiarioSader: null }]] },
   { clave: "posesionPredio", texto: "¿Tienes papeles de tu tierra? Puede ser propia, ejidal o rentada.", ayuda: "Contesta con tu voz o toca una opción.",
@@ -52,7 +52,7 @@ function decir(texto: string): Promise<void> {
 
 type Estado = "lista" | "hablando" | "grabando" | "procesando" | "bien" | "repetir";
 
-export default function GuiaVoz({ perfil, onPerfil }: { perfil: Perfil; onPerfil: (p: Partial<Perfil>) => void }) {
+export default function GuiaVoz({ perfil, onPerfil, municipios }: { perfil: Perfil; onPerfil: (p: Partial<Perfil>) => void; municipios: string[] }) {
   const [respondidas, setRespondidas] = useState<Set<Clave>>(new Set());
   const [indice, setIndice] = useState(0);
   const [estado, setEstado] = useState<Estado>("lista");
@@ -284,6 +284,19 @@ export default function GuiaVoz({ perfil, onPerfil }: { perfil: Perfil; onPerfil
           </div>
         )}
       </div>
+
+      {actual.clave === "municipio" && estado !== "grabando" && (
+        <label className="campo guia-municipio" htmlFor="guia-municipio">
+          <span>O elígelo de la lista ({municipios.length} municipios del Estado de México)</span>
+          <input id="guia-municipio" list="lista-municipios" placeholder="Escribe para buscar, por ejemplo: Tol…" autoComplete="off"
+            disabled={estado === "procesando" || estado === "bien"}
+            onChange={(e) => {
+              const elegido = municipios.find((m) => m === e.target.value);
+              if (elegido) { window.speechSynthesis?.cancel(); setEco(elegido); onPerfil({ municipio: elegido }); avanzar("municipio"); }
+            }} />
+          <datalist id="lista-municipios">{municipios.map((m) => <option key={m} value={m} />)}</datalist>
+        </label>
+      )}
 
       {estado === "grabando" && <p className="guia-escucho">Te escucho… me detengo solo cuando dejes de hablar.</p>}
       {eco && estado !== "grabando" && <p className="guia-eco">Dijiste: “{eco}”</p>}
