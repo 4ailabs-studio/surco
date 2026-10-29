@@ -1,5 +1,5 @@
-import Tablero from "@/components/Tablero";
+import Pantallas from "@/components/Pantallas";
 
 export default function Inicio() {
-  return <Tablero />;
+  return <Pantallas />;
 }
