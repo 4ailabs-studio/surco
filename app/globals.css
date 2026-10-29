@@ -340,3 +340,26 @@ details summary { cursor: pointer; font-weight: 700; margin-top: 14px; }
   .w-barra, .w-pie, .w-aviso { display: none !important; }
   .w-app { background: #fff; }
 }
+
+/* ---------- Estado de la voz ---------- */
+.w-voz-panel { display: flex; align-items: center; gap: 18px; background: var(--w-papel); border: 1.5px solid var(--w-linea); border-radius: 20px; padding: 14px 18px; }
+.w-voz-panel.grabando { border-color: var(--w-chile); background: #fdf3f0; }
+.w-voz-panel.listo { border-color: var(--w-milpa); background: #eef4ea; }
+.w-voz-panel.error { border-color: var(--w-chile); }
+.w-voz-panel.transcribiendo, .w-voz-panel.entendiendo { border-color: var(--w-elote); background: #fdf8e6; }
+.w-voz-estado { display: grid; gap: 4px; min-width: 0; }
+.w-voz-estado b { display: inline-flex; align-items: center; gap: 8px; font-family: var(--font-titulo); font-size: 1.1rem; }
+.w-voz-estado span { color: var(--w-tinta-suave); overflow-wrap: anywhere; }
+.w-rec { color: var(--w-chile); font-variant-numeric: tabular-nums; }
+.w-ok { color: var(--w-milpa); }
+.w-mal { color: var(--w-chile); }
+.w-punto { width: 12px; height: 12px; border-radius: 50%; background: var(--w-chile); display: inline-block; }
+.w-niveles { display: flex; align-items: center; gap: 4px; height: 40px; }
+.w-niveles span { width: 6px; border-radius: 3px; background: var(--w-chile); transition: height .08s linear; }
+.w-voz-panel.listo .w-mic { background: var(--w-milpa); color: #fff; box-shadow: 0 5px 0 #2b4a28; }
+@media (prefers-reduced-motion: no-preference) {
+  .w-punto { animation: w-parpadeo 1s steps(2, start) infinite; }
+  @keyframes w-parpadeo { to { visibility: hidden; } }
+  .w-gira { animation: w-girar 1s linear infinite; }
+  @keyframes w-girar { to { transform: rotate(360deg); } }
+}

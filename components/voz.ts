@@ -27,7 +27,7 @@ export function callar() {
 export type Grabacion = { detener: () => void; resultado: Promise<string> };
 
 /** Graba y se detiene sola tras ~1.4 s de silencio (máximo 12 s); devuelve el texto transcrito por Voxtral. */
-export async function grabarYTranscribir(onNivel?: (n: number) => void): Promise<Grabacion> {
+export async function grabarYTranscribir(onNivel?: (n: number) => void, onDetenido?: () => void): Promise<Grabacion> {
   const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
   const tipo = ["audio/webm;codecs=opus", "audio/mp4", "audio/webm"].find((t) => MediaRecorder.isTypeSupported(t)) ?? "";
   const rec = new MediaRecorder(stream, tipo ? { mimeType: tipo } : undefined);
@@ -61,6 +61,7 @@ export async function grabarYTranscribir(onNivel?: (n: number) => void): Promise
       stream.getTracks().forEach((t) => t.stop());
       ctx.close();
       if (!hablo) return reject(new Error("No te escuché."));
+      onDetenido?.();
       try {
         const blob = new Blob(trozos, { type: rec.mimeType || "audio/webm" });
         const form = new FormData();

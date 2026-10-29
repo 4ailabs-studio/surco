@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import { ArrowLeft, ArrowRight, Check, FileText, Mic, Printer, RotateCcw, Square, Volume2, VolumeX } from "lucide-react";
+import { AlertCircle, ArrowLeft, ArrowRight, Check, FileText, Loader2, Mic, Printer, RotateCcw, Square, Volume2, VolumeX } from "lucide-react";
 import Avatar from "./Avatar";
 import { callar, decir, grabarYTranscribir, siONo, type Grabacion } from "./voz";
 import { calcularCredito, incentivoSeguro, segmentoPara, TASA_BRUTA, TASA_NETA } from "@/lib/credito";
@@ -49,8 +49,12 @@ export default function Pantallas() {
   const [respaldo, setRespaldo] = useState<Respaldo | null>(null);
   const [tengo, setTengo] = useState<Record<string, boolean>>({});
   const [asistente, setAsistente] = useState(false);
-  const [grabando, setGrabando] = useState(false);
-  const [pensando, setPensando] = useState(false);
+  type VozEstado = "inactivo" | "hablando" | "grabando" | "transcribiendo" | "entendiendo" | "listo" | "error";
+  const [voz, setVoz] = useState<VozEstado>("inactivo");
+  const [segundos, setSegundos] = useState(0);
+  const [escuchado, setEscuchado] = useState("");
+  const grabando = voz === "grabando";
+  const pensando = voz === "transcribiendo" || voz === "entendiendo";
   const [nivel, setNivel] = useState(0);
   const [aviso, setAviso] = useState("");
   const [haTexto, setHaTexto] = useState("");
@@ -81,6 +85,8 @@ export default function Pantallas() {
     callar();
     grab.current?.detener();
     setAviso("");
+    setVoz("inactivo");
+    setEscuchado("");
     setHistorial((h) => [...h, paso]);
     setPaso(siguiente);
   }
@@ -107,7 +113,9 @@ export default function Pantallas() {
       : PREGUNTA[paso];
     if (!textoPantalla) return;
     let vivo = true;
+    setVoz("hablando");
     decir(textoPantalla).then(() => {
+      if (vivo) setVoz((v) => (v === "hablando" ? "inactivo" : v));
       if (vivo && ["hectareas", "municipio", "sader", "tierra", "edad", "respaldo"].includes(paso)) escuchar();
     });
     return () => { vivo = false; };
@@ -121,15 +129,25 @@ export default function Pantallas() {
     return j.perfil as Partial<Perfil>;
   }
 
+  // Cronómetro mientras graba
+  useEffect(() => {
+    if (voz !== "grabando") return;
+    setSegundos(0);
+    const t = setInterval(() => setSegundos((x) => x + 1), 1000);
+    return () => clearInterval(t);
+  }, [voz]);
+
   async function escuchar() {
     setAviso("");
+    setEscuchado("");
+    callar();
     try {
-      const g = await grabarYTranscribir(setNivel);
+      const g = await grabarYTranscribir(setNivel, () => setVoz("transcribiendo"));
       grab.current = g;
-      setGrabando(true);
+      setVoz("grabando");
       const texto = await g.resultado;
-      setGrabando(false);
-      setPensando(true);
+      setEscuchado(texto);
+      setVoz("entendiendo");
       const p = paso;
       let ok = false;
       if (p === "hectareas" || p === "municipio") {
@@ -146,14 +164,22 @@ export default function Pantallas() {
           ok = true;
         }
       }
-      setPensando(false);
-      if (ok) { if (asistente) await decir("Entendido."); avanzar(); }
-      else { setAviso(`Escuché “${texto}”, pero no lo entendí. Inténtalo de nuevo o toca una opción.`); if (asistente) decir("No te entendí. Puedes tocar una opción."); }
+      if (ok) {
+        setVoz("listo");
+        if (asistente) await decir("Entendido.");
+        else await new Promise((r) => setTimeout(r, 1100));
+        avanzar();
+      } else {
+        setVoz("error");
+        setAviso("Lo escuché, pero no lo entendí. Inténtalo de nuevo o toca una opción.");
+        if (asistente) decir("No te entendí. Puedes tocar una opción.");
+      }
     } catch (e) {
-      setGrabando(false); setPensando(false);
-      setAviso((e as Error).message?.includes("Permission") || (e as Error).name === "NotAllowedError"
+      setVoz("error");
+      const err = e as Error;
+      setAviso(err.name === "NotAllowedError" || err.message?.includes("Permission")
         ? "No pude usar el micrófono. Revisa el permiso del navegador o toca una opción."
-        : `${(e as Error).message} Inténtalo de nuevo o toca una opción.`);
+        : `${err.message} Inténtalo de nuevo o toca una opción.`);
     }
   }
 
@@ -169,19 +195,36 @@ export default function Pantallas() {
       <Opcion texto="No sé" onClick={() => { onElegir(null); avanzar(); }} />
     </div>
   );
-  const BotonVoz = () => (
-    <div className="w-voz">
+  const mmss = `${Math.floor(segundos / 60)}:${String(segundos % 60).padStart(2, "0")}`;
+  const botonVoz = () => (
+    <div className={`w-voz-panel ${voz}`} aria-live="polite">
       {grabando ? (
-        <button type="button" className="w-mic grabando" onClick={() => grab.current?.detener()} aria-label="Terminar de hablar"
-          style={{ boxShadow: `0 0 0 ${8 + nivel * 22}px rgba(184,74,52,.16)` }}>
+        <button type="button" className="w-mic grabando" onClick={() => grab.current?.detener()} aria-label="Terminar de grabar"
+          style={{ boxShadow: `0 0 0 ${6 + nivel * 20}px rgba(184,74,52,.18)` }}>
           <Square size={26} fill="currentColor" aria-hidden />
         </button>
       ) : (
-        <button type="button" className="w-mic" onClick={escuchar} disabled={pensando} aria-label="Responder con tu voz">
-          <Mic size={30} aria-hidden />
+        <button type="button" className="w-mic" onClick={escuchar} disabled={pensando || voz === "listo"} aria-label="Responder con tu voz">
+          {pensando ? <Loader2 size={30} className="w-gira" aria-hidden /> : voz === "listo" ? <Check size={32} aria-hidden /> : <Mic size={30} aria-hidden />}
         </button>
       )}
-      <span className="w-voz-texto">{grabando ? "Te escucho… me detengo solo" : pensando ? "Entendiendo…" : "Responder con tu voz"}</span>
+      <div className="w-voz-estado">
+        {voz === "inactivo" && <><b>Responder con tu voz</b><span>Toca el micrófono y habla.</span></>}
+        {voz === "hablando" && <><b><Volume2 size={18} aria-hidden /> Surco está hablando…</b><span>Al terminar te escucho.</span></>}
+        {voz === "grabando" && (
+          <>
+            <b className="w-rec"><span className="w-punto" aria-hidden /> Grabando {mmss}</b>
+            <div className="w-niveles" aria-hidden>
+              {[0.35, 0.7, 1, 0.7, 0.35].map((f, i) => <span key={i} style={{ height: `${8 + Math.min(1, nivel * 1.4) * f * 30}px` }} />)}
+            </div>
+            <span>Toca el cuadro para terminar, o me detengo solo cuando dejes de hablar.</span>
+          </>
+        )}
+        {voz === "transcribiendo" && <><b>Grabación terminada</b><span>Convirtiendo tu voz en texto…</span></>}
+        {voz === "entendiendo" && <><b>Entendiendo tu respuesta…</b>{escuchado && <span>Escuché: «{escuchado}»</span>}</>}
+        {voz === "listo" && <><b className="w-ok"><Check size={18} aria-hidden /> ¡Listo!</b><span>Escuché: «{escuchado}»</span></>}
+        {voz === "error" && <><b className="w-mal"><AlertCircle size={18} aria-hidden /> No quedó</b>{escuchado ? <span>Escuché: «{escuchado}»</span> : <span>Vuelve a intentarlo.</span>}</>}
+      </div>
     </div>
   );
 
@@ -229,7 +272,7 @@ export default function Pantallas() {
 
         {paso === "hectareas" && (
           <>
-            <BotonVoz />
+            {botonVoz()}
             <form className="w-entrada" onSubmit={(e) => { e.preventDefault(); const n = Number(haTexto.replace(",", ".")); if (n > 0 && n <= 10000) { setPerfil((x) => ({ ...x, hectareas: n })); avanzar(); } else setAviso("Escribe un número de hectáreas entre 0.1 y 10,000."); }}>
               <label htmlFor="w-ha">O escríbelo</label>
               <div className="w-fila">
@@ -243,7 +286,7 @@ export default function Pantallas() {
 
         {paso === "municipio" && (
           <>
-            <BotonVoz />
+            {botonVoz()}
             <div className="w-entrada">
               <label htmlFor="w-mun">O búscalo ({municipios.length} municipios del Estado de México)</label>
               <input id="w-mun" list="w-lista-mun" value={busca} placeholder="Escribe, por ejemplo: Tol…" autoComplete="off"
@@ -257,9 +300,9 @@ export default function Pantallas() {
           </>
         )}
 
-        {paso === "sader" && (<><SiNo valor={perfil.beneficiarioSader} onElegir={(v) => setPerfil((x) => ({ ...x, beneficiarioSader: v }))} /><BotonVoz /></>)}
-        {paso === "tierra" && (<><p className="w-sub">Ya casi terminamos. Si no los tienes, no pasa nada: te decimos cuáles conseguir.</p><SiNo valor={perfil.posesionPredio} onElegir={(v) => setPerfil((x) => ({ ...x, posesionPredio: v }))} /><BotonVoz /></>)}
-        {paso === "edad" && (<><p className="w-sub">Solo así sabemos si te pueden pedir un aval.</p><SiNo valor={mayor70} onElegir={setMayor70} /><BotonVoz /></>)}
+        {paso === "sader" && (<><SiNo valor={perfil.beneficiarioSader} onElegir={(v) => setPerfil((x) => ({ ...x, beneficiarioSader: v }))} />{botonVoz()}</>)}
+        {paso === "tierra" && (<><p className="w-sub">Ya casi terminamos. Si no los tienes, no pasa nada: te decimos cuáles conseguir.</p><SiNo valor={perfil.posesionPredio} onElegir={(v) => setPerfil((x) => ({ ...x, posesionPredio: v }))} />{botonVoz()}</>)}
+        {paso === "edad" && (<><p className="w-sub">Solo así sabemos si te pueden pedir un aval.</p><SiNo valor={mayor70} onElegir={setMayor70} />{botonVoz()}</>)}
 
         {paso === "califica" && (
           <section className="w-resultado">
@@ -325,7 +368,7 @@ export default function Pantallas() {
               <Opcion texto="Sí" activa={respaldo === "si"} onClick={() => { setRespaldo("si"); avanzar(); }} />
               <Opcion texto="No" activa={respaldo === "no"} onClick={() => { setRespaldo("no"); avanzar(); }} />
             </div>
-            <BotonVoz />
+            {botonVoz()}
           </>
         )}
 
